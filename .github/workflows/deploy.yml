@@ -1,0 +1,3 @@
+cd /home/apps/BFA
+git pull origin main
+docker compose -p bfa up -d --build
