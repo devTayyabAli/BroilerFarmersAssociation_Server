@@ -1,0 +1,20 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t bfa-server:latest .
+  only:
+    - development
+
+deploy:
+  stage: deploy
+  script:
+    - cd /home/apps/BFA
+    - git pull origin development
+    - docker compose down
+    - docker compose up -d --build
+  only:
+    - development
