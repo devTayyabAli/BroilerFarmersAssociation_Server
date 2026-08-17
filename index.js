@@ -4,9 +4,10 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const rateLimit = require("express-rate-limit");
 
-const ratesRouter   = require("./routes/rates");
-const membersRouter = require("./routes/members");
-const contactRouter = require("./routes/contact");
+const ratesRouter        = require("./routes/rates");
+const broilerRatesRouter = require("./routes/broiler-rates");
+const membersRouter      = require("./routes/members");
+const contactRouter      = require("./routes/contact");
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -60,9 +61,10 @@ mongoose
   });
 
 // ── Routes ────────────────────────────────────────────────────────
-app.use("/api/rates",   ratesLimiter, ratesRouter);
-app.use("/api/members", formsLimiter, membersRouter);
-app.use("/api/contact", formsLimiter, contactRouter);
+app.use("/api/rates",         ratesLimiter, ratesRouter);
+app.use("/api/broiler-rates", ratesLimiter, broilerRatesRouter);
+app.use("/api/members",       formsLimiter, membersRouter);
+app.use("/api/contact",       formsLimiter, contactRouter);
 
 // ── Health check ──────────────────────────────────────────────────
 app.get("/api/health", (_, res) => res.json({ status: "ok", time: new Date().toISOString() }));
