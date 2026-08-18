@@ -34,7 +34,7 @@ app.use(cors({
     ) {
       return cb(null, true);
     }
-    cb(new Error(`CORS: ${origin} not allowed`));
+    cb(null, false);
   },
   credentials: true,
 }));
