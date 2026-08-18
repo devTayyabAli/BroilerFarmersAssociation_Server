@@ -16,7 +16,7 @@ const SYNC_COOLDOWN_MS = 60000; // 60 seconds
 async function loadRatesData() {
   if (dataLoaded) return;
   try {
-    const dataPath = path.join(__dirname, "../../agbro-rates/data/agbro-rates-flat.json");
+    const dataPath = path.join(__dirname, "../data/agbro-rates-flat.json");
     const raw = await fs.readFile(dataPath, "utf-8");
     ALL_RATES = JSON.parse(raw);
     dataLoaded = true;
@@ -30,7 +30,7 @@ async function loadRatesData() {
 // Force reload data from disk (used after sync)
 async function reloadRatesData() {
   try {
-    const dataPath = path.join(__dirname, "../../agbro-rates/data/agbro-rates-flat.json");
+    const dataPath = path.join(__dirname, "../data/agbro-rates-flat.json");
     const raw = await fs.readFile(dataPath, "utf-8");
     ALL_RATES = JSON.parse(raw);
     console.log(`🔄 Reloaded ${ALL_RATES.length} broiler rate records`);
@@ -403,7 +403,7 @@ router.post("/sync", async (req, res) => {
       ALL_RATES.push(...newRows);
 
       // Write back to disk
-      const dataPath = path.join(__dirname, "../../agbro-rates/data/agbro-rates-flat.json");
+      const dataPath = path.join(__dirname, "../data/agbro-rates-flat.json");
       await fs.writeFile(dataPath, JSON.stringify(ALL_RATES, null, 2), "utf-8");
 
       added = newRows.length;

@@ -31,6 +31,12 @@ app.use(cors({
 
 app.use(express.json());
 
+// ── Trust proxy (required when behind Nginx / Docker reverse proxy) ─
+// Without this, express-rate-limit throws ERR_ERL_UNEXPECTED_X_FORWARDED_FOR
+// because it sees the X-Forwarded-For header but Express doesn't trust it.
+// '1' means trust the first hop (the Nginx/Traefik/Caddy proxy in front of us).
+app.set("trust proxy", 1);
+
 // ── Rate limiting ─────────────────────────────────────────────────
 // Rates proxy: high limit — fires 75+ parallel city requests per page load,
 // all cached for 5 min on the server so real upstream hits are minimal.
