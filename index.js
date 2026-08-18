@@ -13,21 +13,32 @@ const app  = express();
 const PORT = process.env.PORT || 5000;
 
 // ── CORS ──────────────────────────────────────────────────────────
-const allowedOrigins = (process.env.CORS_ORIGIN || "")
+const defaultAllowed = ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "http://127.0.0.1:5173"];
+const envOrigins = (process.env.CORS_ORIGIN || "")
   .split(",")
   .map(o => o.trim().replace(/\/$/, "")) // strip trailing slashes
   .filter(Boolean);
 
+const allowedOrigins = [...new Set([...defaultAllowed, ...envOrigins])];
+
 app.use(cors({
   origin: (origin, cb) => {
-    // allow requests with no origin (server-to-server, curl, same-origin)
+    // allow requests with no origin (server-to-server, curl, same-origin, postman)
     if (!origin) return cb(null, true);
     const normalised = origin.replace(/\/$/, "");
-    if (allowedOrigins.length === 0 || allowedOrigins.includes(normalised)) return cb(null, true);
+    if (
+      envOrigins.length === 0 ||
+      envOrigins.includes("*") ||
+      allowedOrigins.includes(normalised) ||
+      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(normalised)
+    ) {
+      return cb(null, true);
+    }
     cb(new Error(`CORS: ${origin} not allowed`));
   },
   credentials: true,
 }));
+
 
 app.use(express.json());
 
